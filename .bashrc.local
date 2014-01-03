@@ -1,0 +1,105 @@
+# Function to check whether a command exists or not
+command_exists() { command -v "$1" >/dev/null 2>&1 ; }
+
+# Environment variables
+export EDITOR="vim"                 # Use vim as default editor
+export LESSHISTFILE="-"             # Don't create a less history file
+
+# Colors
+export GREP_OPTIONS="--color=auto"
+export GREP_COLOR="1;32"
+export LESS_TERMCAP_mb=$'\e[1;37m'
+export LESS_TERMCAP_md=$'\e[1;37m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_se=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[1;47;30m'
+export LESS_TERMCAP_ue=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[0;32m'
+function env() { exec /usr/bin/env "$@" | grep -v ^LESS_TERMCAP_ ; }
+
+# Aliases
+alias ..="cd .."
+alias ...="cd ../.."
+alias vi="vim"
+alias ls="ls --color=auto"
+alias o="xdg-open"
+alias go.root="go_root && cd ."
+alias go.prog="git rev-parse --show-toplevel > /dev/null 2>&1; if [[ $? -ne 0 ]]; then echo 'not in a component'; else builtin cd `git rev-parse --show-toplevel 2> /dev/null`; builtin cd local 2> /dev/null; cd .; fi;"
+alias go.stash='cd /mnt/eng/users/$USER/stash'
+alias cgdb="cgdb -d msp430-gdb --symbols $1 --eval-command=\"set remoteaddresssize 16\" --eval-command=\"target remote $2:2000\" --eval-command=\"set remotetimeout 999999\" --eval-command=\"set download-write-size 512\" --eval-command=\"set remote memory-write-packet-size 512\" --eval-command=\"set remote memory-write-packet-size fixed\" --eval-command=\"set remote memory-read-packet-size 512\" --eval-command=\"set remote memory-read-packet-size fixed\""
+alias fixkeyboard="sudo dpkg-reconfigure keyboard-configuration"
+
+# Git shortcuts
+alias gits="git status"
+alias gita="git add"
+alias gitc="git pr commit"
+alias gitco="git checkout"
+alias gitd="git diff"
+alias gitp="git push"
+alias gitl="git log"
+alias git.rm="git diff --diff-filter=D --name-only -z | xargs -0 git rm"
+alias gitvim="vim -p \$(git status --short | awk '\$1 ~ /^M$/ {print \$2}')"
+function git_is_merged() {
+    revlist=$(git rev-list -1 $1 --not $2)
+    if [ $? -eq 0 ]; then
+        if [ "$revlist" = "" ]; then
+            echo "$1 IS merged into $2."
+        else
+            echo "$1 is NOT merged into $2."
+        fi
+    fi
+}
+
+# Create dir and cd into it
+function mkcd() { mkdir -p "$1" && cd "$1"; }
+
+# List directory contents after cd
+function cd() { builtin cd -- "$@" && { [ "$PS1" = "" ] || ls --color; }; }
+
+function dig() { 
+   ls -d */ >/dev/null 2>&1;
+   if [[ $? -eq 0 && `ls -d */ | wc -l` -eq 1 ]]; 
+   then 
+      builtin cd `ls -d */`;
+      dig;
+   fi 
+}
+
+function in_component() {
+   git rev-parse --show-toplevel > /dev/null 2>&1;
+   return "$?"
+}
+
+function go_root() {
+   pushd . 1>/dev/null
+   until [[ -d .repo ]]; do
+      if [ $PWD = "/" ]; then
+         echo "You are not in a software repository that has a PRODUCT_ROOT."
+         popd 1>/dev/null
+         return 1
+      fi
+      builtin cd ..
+   done
+   builtin cd $PWD
+}
+
+# Colors
+if [ -f ~/.bashrc.colors ]; then
+    . ~/.bashrc.colors
+fi
+
+# Includes
+if [ -f /usr/bin/virtualenvwrapper.sh ] ; then source /usr/bin/virtualenvwrapper.sh ; fi
+if [ -f /etc/bash_completion.d/git ] ; then source /etc/bash_completion.d/git ; fi
+if [ -f /usr/share/git/git-prompt.sh ] ; then source /usr/share/git/git-prompt.sh ; fi
+
+# Custom PS1 containing the current git branch and rvm gemset
+if command_exists __git_ps1; then
+    export PS1="\$(__git_ps1 \"[\[$BIRed\]%s\[$Color_Off\]]\")\[$BIGreen\]\u@\h\[$Color_Off\]:\[$BIBlue\]\W\[$Color_Off\]\$ "
+else
+    export PS1="[\u@\h \W]\$ "
+fi
+if command_exists rvm; then
+    export PS1="\$(rvm-prompt | awk -F'@' '{if (\$2) print \"{\"\$2\"}\"}')$PS1"
+fi
+

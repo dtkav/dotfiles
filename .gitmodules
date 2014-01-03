@@ -1,0 +1,9 @@
+[submodule "vundle"]
+	path = .vim/bundle/vundle
+	url = https://github.com/gmarik/vundle.git
+[submodule "powerline"]
+	path = .vim/bundle/powerline
+   url = https://github.com/Lokaltog/powerline.git
+[submodule "vim-jade"]
+	path = .vim/bundle/vim-jade
+   url = https://github.com/digitaltoad/vim-jade.git
