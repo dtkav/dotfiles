@@ -1,7 +1,31 @@
 [user]
-	name = Daniel Grossmann-Kavanagh
-	email = kavanaghdaniel@gmail.com
-[color]
-	ui = auto
+    name = Daniel Grossmann-Kavanagh
+    email = kavanaghdaniel@gmail.com
+
 [push]
-	default = simple
+    default = simple
+
+[diff]
+	tool = vimdiff
+
+[color]
+    ui = auto
+    diff = auto
+
+[alias]
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+    l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --no-merges
+    st = status -suno
+    c = commit -uno
+    conflicts = diff --name-only --diff-filter=U
+	d = difftool
+
+[branch]
+    autosetuprebase = always
+
+[core]
+    editor = /usr/bin/vim
+    pager = less
+
+[difftool]
+	prompt = false
