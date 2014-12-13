@@ -26,6 +26,7 @@ alias ..="cd .."
 alias ...="cd ../.."
 alias vi="vim"
 alias ls="ls --color=auto"
+alias ll='ls -alF'
 alias o="xdg-open"
 
 # Git shortcuts
