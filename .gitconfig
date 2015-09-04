@@ -3,7 +3,7 @@
     email = kavanaghdaniel@gmail.com
 
 [push]
-    default = simple
+    default = current
 
 [diff]
 	tool = vimdiff

@@ -8,11 +8,15 @@ manage all of your dofiles from within a signle .git repo.
 The .git directory is not linked into your home directory.
 """
 
+from __future__ import print_function
+
 import os
 import distutils.util
 import errno
+import shutil
 
-exclude_list = [".git"]
+
+exclude_list = [".git", ".gitmodules", ".gitignore"]
 
 # python2 compatability
 try:
@@ -44,7 +48,13 @@ def main():
                     os.symlink(src, dst)
                 except OSError as e:
                     if e.errno == errno.EEXIST:
-                        os.unlink(dst)
+                        if os.path.isdir(dst):
+                            try:
+                                shutil.rmtree(dst)
+                            except OSError:
+                                os.unlink(dst)
+                        else:
+                            os.unlink(dst)
                         os.symlink(src, dst)
                 print("symlink %s -> %s" % (dst, src))
 

@@ -8,8 +8,8 @@
 alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
 
-if [[ -f .bashrc.local ]]; then 
-    source .bashrc.local
+if [[ -f ~/.bashrc.local ]]; then
+    source ~/.bashrc.local
 fi
 
 if [[ -f /etc/profile.d/locale.sh ]]; then 
@@ -17,3 +17,4 @@ if [[ -f /etc/profile.d/locale.sh ]]; then
 fi
 
 LC_ALL=en_US.UTF-8
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

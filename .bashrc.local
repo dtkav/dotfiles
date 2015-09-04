@@ -2,11 +2,14 @@
 command_exists() { command -v "$1" >/dev/null 2>&1 ; }
 
 # Environment variables
-export DEV="/home/daniel/stash"
 export EDITOR="vim"                 # Use vim as default editor
 export LESSHISTFILE="-"             # Don't create a less history file
-export PYTHONPATH="$DEV/python:$PYTHONPATH"
-mkdir -p $DEV
+export PATH=$PATH:/home/daniel/cosmogia/dev_tools/bin
+export PATH=$PATH:/home/daniel/micromanager/dev_tools/bin
+export VAGRANT_EXTRA_DIRS="/home/daniel/dotfiles"
+export GOROOT=$HOME/go
+export GOPATH=$HOME/stash/go
+export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 
 # Colors
 export GREP_OPTIONS="--color=auto"
@@ -19,15 +22,25 @@ export LESS_TERMCAP_so=$'\e[1;47;30m'
 export LESS_TERMCAP_ue=$'\e[0m'
 export LESS_TERMCAP_us=$'\e[0;32m'
 function env() { exec /usr/bin/env "$@" | grep -v ^LESS_TERMCAP_ ; }
+function finder() { find . -name "*$1*"; }
+function ffinder() { grep -i -r --include \*$1 $2 . ; }
+function fffinder() { grep -i -r -B2 -A5 --include \*$1 $2 . ; }
 
 # Aliases
-alias gs="cd $DEV"
 alias ..="cd .."
 alias ...="cd ../.."
 alias vi="vim"
 alias ls="ls --color=auto"
 alias ll='ls -alF'
 alias o="xdg-open"
+alias f=finder
+alias ff=ffinder
+alias fff=fffinder
+alias vms="vboxmanage list runningvms"
+function backlight() { echo "$1" | sudo tee /sys/class/backlight/intel_backlight/brightness; }
+alias ldry='TOP=$(git rev-parse --show-toplevel) && builtin cd $TOP/data/micromanager/runs/um.dry_runs && builtin cd $(ls | tail -n 1)'
+alias last='TOP=$(git rev-parse --show-toplevel) && builtin cd $TOP/data/micromanager/runs/um && builtin cd $(ls | tail -n 1)'
+alias fehh='feh --bg-fill ~/Pictures/iss042e289686.jpg'
 
 # Git shortcuts
 alias gits="git status"
@@ -50,20 +63,19 @@ function git_is_merged() {
     fi
 }
 
+function __schroot() {
+    if [[ ! -z $SCHROOT_CHROOT_NAME ]]; then
+        echo "$SCHROOT_CHROOT_NAME"
+    else
+        hostname
+    fi
+}
+
 # Create dir and cd into it
 function mkcd() { mkdir -p "$1" && cd "$1"; }
 
 # List directory contents after cd
 function cd() { builtin cd -- "$@" && { [ "$PS1" = "" ] || ls --color; }; }
-
-function dig() { 
-   ls -d */ >/dev/null 2>&1;
-   if [[ $? -eq 0 && `ls -d */ | wc -l` -eq 1 ]]; 
-   then 
-      builtin cd `ls -d */`;
-      dig;
-   fi 
-}
 
 # Colors
 if [[ -f ~/.bashrc.colors ]]; then
@@ -73,9 +85,10 @@ fi
 # Includes
 if [ -f /usr/bin/virtualenvwrapper.sh ] ; then source /usr/bin/virtualenvwrapper.sh ; fi
 if [ -f /etc/bash_completion.d/git ] ; then source /etc/bash_completion.d/git ; fi
+if [ -f /etc/bash_completion.d/git-prompt ] ; then source /etc/bash_completion.d/git-prompt ; fi
 if [ -f /usr/share/git/git-prompt.sh ] ; then source /usr/share/git/git-prompt.sh ; fi
 
-export PS1='`if [ $? = 0 ]; then echo "\[\033[01;32m\]✔"; else echo "\[\033[01;31m\]✘"; fi` \[\033[01;30m\]\h\[\033[01;34m\] \w\[\033[35m\]$(__git_ps1 " %s") \[\033[01;30m\]>\[\033[00m\] '
+export PS1='`if [ $? = 0 ]; then echo "\[\033[01;32m\]✔"; else echo "\[\033[01;31m\]✘"; fi` \[\033[01;30m\]$(__schroot)\[\033[01;34m\] \w\[\033[35m\]$(__git_ps1 " %s") \[\033[01;30m\]>\[\033[00m\] '
 
 # The next line updates PATH for the Google Cloud SDK.
 if [[ -f '/home/daniel/stash/google-cloud-sdk/path.bash.inc' ]]; then
@@ -86,6 +99,20 @@ fi
 if [[ -f '/home/daniel/stash/google-cloud-sdk/completion.bash.inc' ]]; then
     source '/home/daniel/stash/google-cloud-sdk/completion.bash.inc'
 fi
+
+# Enable generic bash completion
+if [[ -f '/etc/bash_completion' ]]; then
+    source '/etc/bash_completion'
+fi
+
+# Enable generic bash completion
+if [[ -f '/etc/bash_completion.d/git' ]]; then
+    source '/etc/bash_completion.d/git'
+fi
+
+test -f /vagrant/dev_tools/bash_aliases/ops_aliases.sh && . $_
+test -f ~/ops/dev_tools/bash_aliases/ops_aliases.sh && . $_
+test -f ~/.git-completion.bash && . $_
 
 # The next line enforces correct version of python for gcloud
 export CLOUDSDK_PYTHON=/usr/bin/python2.7

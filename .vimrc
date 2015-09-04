@@ -3,6 +3,9 @@ set term=xterm-256color
 highlight PmenuSel ctermfg=black ctermbg=cyan
 highlight Pmenu ctermfg=green ctermbg=black
 
+" enable modelines
+set modeline
+
 " Swap colon and semicolon
 nore ; :
 nore , ;
@@ -20,7 +23,12 @@ endif
 " set background=dark
 " syntax on
 
+" Show trailing whitepace and spaces before a tab:
+highlight ExtraWhitespace ctermbg=red guibg=red
+autocmd Syntax * syn match ExtraWhitespace /\s\+$\| \+\ze\t/
+
 set tags=./tags;/
+set rtp+=~/.fzf
 
 " Map leader key
 let mapleader = ","
@@ -85,6 +93,9 @@ Bundle 'gmarik/vundle'
 
 " Enhanced status line
 Bundle 'Lokaltog/powerline'
+
+" Flake8 Checks
+Bundle 'nvie/vim-flake8'
 
 " Powerline
 set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
