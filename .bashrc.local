@@ -4,15 +4,13 @@ command_exists() { command -v "$1" >/dev/null 2>&1 ; }
 # Environment variables
 export EDITOR="vim"                 # Use vim as default editor
 export LESSHISTFILE="-"             # Don't create a less history file
-export PATH=$PATH:/home/daniel/cosmogia/dev_tools/bin
-export PATH=$PATH:/home/daniel/micromanager/dev_tools/bin
 export VAGRANT_EXTRA_DIRS="/home/daniel/dotfiles"
-export GOROOT=$HOME/go
-export GOPATH=$HOME/stash/go
-export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH="/home/$USER/go"
+export PATH=$GOPATH/bin:$PATH
 
 # Colors
-export GREP_OPTIONS="--color=auto"
+#export GREP_OPTIONS="--color=auto"
 export GREP_COLOR="1;32"
 export LESS_TERMCAP_mb=$'\e[1;37m'
 export LESS_TERMCAP_md=$'\e[1;37m'
@@ -32,15 +30,24 @@ alias ...="cd ../.."
 alias vi="vim"
 alias ls="ls --color=auto"
 alias ll='ls -alF'
+alias ag='apt-get'
+alias agi='apt-get install'
 alias o="xdg-open"
 alias f=finder
 alias ff=ffinder
 alias fff=fffinder
 alias vms="vboxmanage list runningvms"
 function backlight() { echo "$1" | sudo tee /sys/class/backlight/intel_backlight/brightness; }
-alias ldry='TOP=$(git rev-parse --show-toplevel) && builtin cd $TOP/data/micromanager/runs/um.dry_runs && builtin cd $(ls | tail -n 1)'
-alias last='TOP=$(git rev-parse --show-toplevel) && builtin cd $TOP/data/micromanager/runs/um && builtin cd $(ls | tail -n 1)'
 alias fehh='feh --bg-fill ~/Pictures/iss042e289686.jpg'
+alias bastion='ssh -D 8123 -f -C -q -N $USER@$BASTION'
+alias getchrome='wget -N https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O $HOME/Downloads/chrome.deb'
+alias updatechrome='sudo dpkg -i $HOME/Downloads/chrome.deb'
+alias up='nmcli c up'
+alias vpn='sudo openvpn $HOME/planet-vpn/planet-vpn-2.0.0-beta.2.ovpn'
+alias wifi='nmcli r wifi'
+alias headphones='echo 0 | sudo tee /sys/module/snd_hda_intel/parameters/power_save'
+alias scan='nmcli -f IN-USE,SSID,BSSID,CHAN,BARS d wifi list'
+alias ap='scan | grep "^\*"'
 
 # Git shortcuts
 alias gits="git status"
