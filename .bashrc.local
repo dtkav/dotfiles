@@ -167,5 +167,6 @@ test -f ~/.git-completion.bash && . $_
 
 # The next line enforces correct version of python for gcloud
 export CLOUDSDK_PYTHON=/usr/bin/python2.7
+export PATH=$HOME/node/bin:$PATH
 # Android studio workaround for dwm
 export _JAVA_AWT_WM_NONREPARENTING=1
