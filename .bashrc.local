@@ -76,8 +76,21 @@ export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; histor
 # Aliases
 alias ..="cd .."
 alias ...="cd ../.."
+alias status='~/.dwmstatus.sh &'
+
+# git rebase aliases
+alias to_resolve='git status --porcelain | awk '\''{ if ($1 == "UU") print $2}'\'''
+alias rres='vim -p $(to_resolve)'
+alias rcon='git rebase --continue'
+alias radd='git add $(to_resolve)'
+
 alias vi="vim"
+alias emacs="emacs -nw"
+alias clip='xclip -selection c'
+alias n="nmcli"
+alias sudp="sudo"
 alias ls="ls --color=auto"
+alias watch="watch --color"
 alias ll='ls -alF'
 alias ag='apt-get'
 alias agi='apt-get install'
@@ -100,6 +113,9 @@ alias scan='nmcli -f IN-USE,SSID,BSSID,CHAN,BARS d wifi list'
 alias ap='scan | grep "^\*"'
 
 # Git shortcuts
+alias pull="git pull"
+alias s="git status"
+alias gti="git"
 alias gits="git status"
 alias gita="git add"
 alias gitc="git pr commit"
