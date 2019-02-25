@@ -19,10 +19,29 @@ export LESS_TERMCAP_se=$'\e[0m'
 export LESS_TERMCAP_so=$'\e[1;47;30m'
 export LESS_TERMCAP_ue=$'\e[0m'
 export LESS_TERMCAP_us=$'\e[0;32m'
+
 function env() { exec /usr/bin/env "$@" | grep -v ^LESS_TERMCAP_ ; }
-function finder() { find . -name "*$1*"; }
-function ffinder() { grep -i -r --include \*$1 $2 . ; }
-function fffinder() { grep -i -r -B2 -A5 --include \*$1 $2 . ; }
+
+# update backlight brightness
+function backlight() { echo "$1" | sudo tee /sys/class/backlight/intel_backlight/brightness; }
+
+# files containing string in name
+function find_file() { find . -name "*$1*"; }
+
+# grep, but limited by file extension
+function grep_by_ext() { grep -r --include \*$1 $2 . ; }
+
+# grep -i, but limited by file extension
+function grep_i_by_ext() { grep -r -i --include \*$1 $2 . ; }
+
+# git grep, but limited by file extension
+function gitgrep_by_ext() { star='*'; ext=$(echo \'$star.$1\'); sh -c "git grep $2 -- $ext"; }
+
+# git grep -i, but limited by file extension
+function git_grep_i_by_ext() { star='*'; ext=$(echo \'$star.$1\'); sh -c "git grep -i $2 -- $ext"; }
+
+# like grep_by_ext, but with line context
+function grep_context_by_ext() { grep -i -r -B2 -A5 --include \*$1 $2 . ; }
 
 # Aliases
 alias ..="cd .."
@@ -33,19 +52,19 @@ alias ll='ls -alF'
 alias ag='apt-get'
 alias agi='apt-get install'
 alias o="xdg-open"
-alias f=finder
-alias ff=ffinder
-alias fff=fffinder
+alias f=find_file
+alias ff=grep_by_ext
+alias ffi=grep_i_by_ext
+alias gg=git_grep_by_ext
+alias ggi=git_grep_i_by_ext
+alias fff=grep_context_by_ext
 alias vms="vboxmanage list runningvms"
-function backlight() { echo "$1" | sudo tee /sys/class/backlight/intel_backlight/brightness; }
 alias fehh='feh --bg-fill ~/Pictures/iss042e289686.jpg'
 alias bastion='ssh -D 8123 -f -C -q -N $USER@$BASTION'
-alias getchrome='wget -N https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O $HOME/Downloads/chrome.deb'
+alias getchrome='wget -N https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O $HOME/downloads/chrome.deb'
 alias updatechrome='sudo dpkg -i $HOME/Downloads/chrome.deb'
 alias up='nmcli c up'
-alias vpn='sudo openvpn $HOME/planet-vpn/planet-vpn-2.0.0-beta.2.ovpn'
 alias wifi='nmcli r wifi'
-alias headphones='echo 0 | sudo tee /sys/module/snd_hda_intel/parameters/power_save'
 alias scan='nmcli -f IN-USE,SSID,BSSID,CHAN,BARS d wifi list'
 alias ap='scan | grep "^\*"'
 
@@ -98,13 +117,13 @@ if [ -f /usr/share/git/git-prompt.sh ] ; then source /usr/share/git/git-prompt.s
 export PS1='`if [ $? = 0 ]; then echo "\[\033[01;32m\]✔"; else echo "\[\033[01;31m\]✘"; fi` \[\033[01;30m\]$(__schroot)\[\033[01;34m\] \w\[\033[35m\]$(__git_ps1 " %s") \[\033[01;30m\]>\[\033[00m\] '
 
 # The next line updates PATH for the Google Cloud SDK.
-if [[ -f '/home/daniel/stash/google-cloud-sdk/path.bash.inc' ]]; then
-    source '/home/daniel/stash/google-cloud-sdk/path.bash.inc'
+if [[ -f "$HOME/stash/google-cloud-sdk/path.bash.inc" ]]; then
+    source "$HOME/stash/google-cloud-sdk/path.bash.inc"
 fi
 
 # The next line enables bash completion for gcloud.
-if [[ -f '/home/daniel/stash/google-cloud-sdk/completion.bash.inc' ]]; then
-    source '/home/daniel/stash/google-cloud-sdk/completion.bash.inc'
+if [[ -f "$HOME/stash/google-cloud-sdk/completion.bash.inc" ]]; then
+    source "$HOME/stash/google-cloud-sdk/completion.bash.inc"
 fi
 
 # Enable generic bash completion
@@ -117,8 +136,6 @@ if [[ -f '/etc/bash_completion.d/git' ]]; then
     source '/etc/bash_completion.d/git'
 fi
 
-test -f /vagrant/dev_tools/bash_aliases/ops_aliases.sh && . $_
-test -f ~/ops/dev_tools/bash_aliases/ops_aliases.sh && . $_
 test -f ~/.git-completion.bash && . $_
 
 # The next line enforces correct version of python for gcloud
