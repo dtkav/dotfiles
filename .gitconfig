@@ -1,12 +1,13 @@
 [user]
     name = Daniel Grossmann-Kavanagh
-    email = kavanaghdaniel@gmail.com
+    email = me@danielgk.com
+    signingkey = 8E67F2505F8DF6A1
 
 [push]
     default = current
 
 [diff]
-	tool = vimdiff
+    tool = vimdiff
 
 [color]
     ui = auto
@@ -18,7 +19,8 @@
     st = status -suno
     c = commit -uno
     conflicts = diff --name-only --diff-filter=U
-	d = difftool
+    d = difftool
+    staged = diff --staged
 
 [branch]
     autosetuprebase = always
@@ -28,4 +30,16 @@
     pager = less
 
 [difftool]
-	prompt = false
+    prompt = false
+
+[gpg]
+    program = gpg2
+
+[commit]
+    gpgsign = true
+
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
