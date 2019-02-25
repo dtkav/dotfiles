@@ -23,6 +23,26 @@ export LESS_TERMCAP_us=$'\e[0;32m'
 
 function env() { exec /usr/bin/env "$@" | grep -v ^LESS_TERMCAP_ ; }
 
+# simple ftp server
+function ftpd() {
+    docker run -d --rm \
+      -v /tmp/vsftpd:/home/vsftpd \
+      -p 20:20 \
+      -p 21:21 \
+      -p 21100-21110:21100-21110 \
+      -e FTP_USER="$FTP_USER" \
+      -e FTP_PASS="$FTP_PASS" \
+      -e PASV_ADDRESS=192.168.1.186 \
+      -e PASV_MIN_PORT=21100 \
+      -e PASV_MAX_PORT=21110 \
+      --user $USER \
+      --name vsftpd fauria/vsftpd
+}
+
+function killftpd() {
+    docker kill vsftpd
+}
+
 # update backlight brightness
 function backlight() { echo "$1" | sudo tee /sys/class/backlight/intel_backlight/brightness; }
 
