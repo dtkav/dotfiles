@@ -111,6 +111,8 @@ alias up='nmcli c up'
 alias wifi='nmcli r wifi'
 alias scan='nmcli -f IN-USE,SSID,BSSID,CHAN,BARS d wifi list'
 alias ap='scan | grep "^\*"'
+alias wide='~/.screenlayout/wide.sh'
+alias xps='~/.screenlayout/home.sh'
 
 # Git shortcuts
 alias pull="git pull"
