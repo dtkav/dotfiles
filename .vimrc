@@ -50,13 +50,14 @@ filetype plugin indent on
 " littering the source tree.
 set directory=~/.vim/tmp
 
-" 120 column 
+" 80 column 
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%121v.\+/
+match OverLength /\%80v.\+/
 
 " Tab shortcuts
 map <C-n> :tabn<Enter>
 map <C-p> :tabp<Enter>
+map <C-l> :NERDTreeToggle<CR>
 
 " Toggle whitespace with ,s
 set listchars=tab:>-,trail:?,eol:$
@@ -71,6 +72,7 @@ nmap <silent> <leader>n :set nonu!<CR> :set nornu!<CR>
 
 " Toggle paste mode with F3
 set pastetoggle=<F3>
+nmap <F6> :exec '!'.getline('.')
 
 " Useful aliases
 command! Q  q

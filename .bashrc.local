@@ -2,6 +2,16 @@
 command_exists() { command -v "$1" >/dev/null 2>&1 ; }
 
 test -f .bashrc.secrets && . $_
+
+# History Settings
+export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
+export HISTSIZE=100000                   # big big history
+export HISTFILESIZE=100000               # big big history
+shopt -s histappend                      # append to history, don't overwrite it
+
+# Save and reload the history after each command finishes
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
 # Environment variables
 export EDITOR="vim"                 # Use vim as default editor
 export LESSHISTFILE="-"             # Don't create a less history file
@@ -13,6 +23,12 @@ export PATH=$GOPATH/bin:$PATH
 # Colors
 #export GREP_OPTIONS="--color=auto"
 export GREP_COLOR="1;32"
+export GOROOT=$HOME/go
+export GOPATH=$HOME/stash/go
+export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh_auth_sock"
+
+# Colors
 export LESS_TERMCAP_mb=$'\e[1;37m'
 export LESS_TERMCAP_md=$'\e[1;37m'
 export LESS_TERMCAP_me=$'\e[0m'
@@ -64,12 +80,6 @@ function git_grep_i_by_ext() { star='*'; ext=$(echo \'$star.$1\'); sh -c "git gr
 # like grep_by_ext, but with line context
 function grep_context_by_ext() { grep -i -r -B2 -A5 --include \*$1 $2 . ; }
 
-# SHARED HISTORY
-# Avoid duplicates
-export HISTCONTROL=ignoredups:erasedups
-# When the shell exits, append to the history file instead of overwriting it
-shopt -s histappend
-
 # After each command, append to the history file and reread it
 export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
@@ -113,11 +123,19 @@ alias scan='nmcli -f IN-USE,SSID,BSSID,CHAN,BARS d wifi list'
 alias ap='scan | grep "^\*"'
 alias wide='~/.screenlayout/wide.sh'
 alias xps='~/.screenlayout/home.sh'
+alias k="kubectl"
+alias tags='ctags -R --extra=+f'
+alias pyclean='find . -name "*.pyc" -delete'
 
 # Git shortcuts
 alias pull="git pull"
 alias s="git status"
 alias gti="git"
+alias pull="git pull"
+alias push="git push"
+alias add="git add"
+alias g="git status"
+alias gd="git diff"
 alias gits="git status"
 alias gita="git add"
 alias gitc="git pr commit"
@@ -201,3 +219,6 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 # ubuntu 18.04 workaround...
 # https://github.com/PX4/Firmware/issues/9409#issuecomment-416024987
 export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libgtk3-nocsd.so.0 $LD_PRELOAD"
+
+# disable ctrl-s/ctrl-q terminal control flow
+stty -ixon
