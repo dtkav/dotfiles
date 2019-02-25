@@ -64,6 +64,15 @@ function git_grep_i_by_ext() { star='*'; ext=$(echo \'$star.$1\'); sh -c "git gr
 # like grep_by_ext, but with line context
 function grep_context_by_ext() { grep -i -r -B2 -A5 --include \*$1 $2 . ; }
 
+# SHARED HISTORY
+# Avoid duplicates
+export HISTCONTROL=ignoredups:erasedups
+# When the shell exits, append to the history file instead of overwriting it
+shopt -s histappend
+
+# After each command, append to the history file and reread it
+export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+
 # Aliases
 alias ..="cd .."
 alias ...="cd ../.."
