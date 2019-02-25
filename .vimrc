@@ -12,6 +12,7 @@ nore , ;
 
 "Makefiles with tabs not spaces
 autocmd FileType make setlocal noexpandtab
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
 " Jump to the last position when reopening a file
 if has("autocmd")
@@ -66,7 +67,7 @@ set rnu
 set nu
 
 " Toggle line numbers with ,n
-nmap <silent> <leader>n :set nonu!<CR>
+nmap <silent> <leader>n :set nonu!<CR> :set nornu!<CR>
 
 " Toggle paste mode with F3
 set pastetoggle=<F3>
@@ -76,6 +77,9 @@ command! Q  q
 command! W  w
 command! Wq  wq
 command! WQ  wq
+
+" hide file types when navigating filesystem (called netrw)
+let g:netrw_list_hide= '.*\.swp$,.*\.pyc$'
 
 " Starting with Vim 7, the filetype of empty .tex files defaults to 'plaintex'
 " instead of 'tex'. The following changes the default filetype back to 'tex'
@@ -93,9 +97,6 @@ Bundle 'gmarik/vundle'
 
 " Enhanced status line
 Bundle 'Lokaltog/powerline'
-
-" Flake8 Checks
-Bundle 'nvie/vim-flake8'
 
 " Powerline
 set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim

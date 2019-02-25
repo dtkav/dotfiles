@@ -13,12 +13,12 @@
 [submodule ".vim/bundle/vim-markdown"]
 	path = .vim/bundle/vim-markdown
 	url = https://github.com/plasticboy/vim-markdown.git
-[submodule ".vim/bundle/vim-flake8"]
-	path = .vim/bundle/vim-flake8
-	url = https://github.com/andviro/flake8-vim.git
 [submodule ".vim/bundle/vim-go"]
 	path = .vim/bundle/vim-go
 	url = https://github.com/fatih/vim-go.git
 [submodule "powerline-fonts"]
 	path = powerline-fonts
-	url = git@github.com:powerline/fonts.git
+	url = git://github.com/powerline/fonts.git
+[submodule ".vim/bundle/ale"]
+	path = .vim/bundle/ale
+	url = https://github.com/w0rp/ale.git
