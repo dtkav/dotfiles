@@ -197,3 +197,7 @@ export CLOUDSDK_PYTHON=/usr/bin/python2.7
 export PATH=$HOME/node/bin:$PATH
 # Android studio workaround for dwm
 export _JAVA_AWT_WM_NONREPARENTING=1
+
+# ubuntu 18.04 workaround...
+# https://github.com/PX4/Firmware/issues/9409#issuecomment-416024987
+export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libgtk3-nocsd.so.0 $LD_PRELOAD"
