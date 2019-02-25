@@ -42,21 +42,29 @@ def main():
             home = os.path.expanduser("~")
             src = os.path.join(os.path.relpath(dotfiles_dir, home), dotfile)
             dst = os.path.join(home, dotfile)
-            if (not os.path.exists(dst)) \
-            or prompt("do you want to overwrite " + dst + "?"):
-                try:
-                    os.symlink(src, dst)
-                except OSError as e:
-                    if e.errno == errno.EEXIST:
-                        if os.path.isdir(dst):
-                            try:
-                                shutil.rmtree(dst)
-                            except OSError:
-                                os.unlink(dst)
-                        else:
+
+            if os.path.islink(dst):
+                print("skipping %s (already symlink)" % dst)
+                continue
+
+            if os.path.exists(dst):
+                overwrite = prompt("do you want to overwrite " + dst + "?")
+                if not overwrite:
+                    continue
+
+            try:
+                os.symlink(src, dst)
+            except OSError as e:
+                if e.errno == errno.EEXIST:
+                    if os.path.isdir(dst):
+                        try:
+                            shutil.rmtree(dst)
+                        except OSError:
                             os.unlink(dst)
-                        os.symlink(src, dst)
-                print("symlink %s -> %s" % (dst, src))
+                    else:
+                        os.unlink(dst)
+                    os.symlink(src, dst)
+            print("symlink %s -> %s" % (dst, src))
 
 if __name__ == "__main__":
     main()   
