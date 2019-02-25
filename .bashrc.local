@@ -1,6 +1,7 @@
 # Function to check whether a command exists or not
 command_exists() { command -v "$1" >/dev/null 2>&1 ; }
 
+test -f .bashrc.secrets && . $_
 # Environment variables
 export EDITOR="vim"                 # Use vim as default editor
 export LESSHISTFILE="-"             # Don't create a less history file
