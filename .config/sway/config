@@ -23,6 +23,7 @@ set $menu dmenu_path | dmenu | xargs swaymsg exec
 default_border pixel 2
 
 set $laptop eDP-1
+output $laptop scale 2
 bindswitch lid:on output $laptop disable
 bindswitch lid:off output $laptop enable
 
